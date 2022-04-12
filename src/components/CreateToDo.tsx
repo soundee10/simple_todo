@@ -19,7 +19,7 @@ function CreateToDo(){
     return (
     <form
         onSubmit={handleSubmit(handleValid)}>
-            <input {...register("toDo", {required: "todo required", minLength: 5})} placeholder="Write a to do" />
+            <input {...register("toDo", {required: "todo required"})} placeholder="Write a to do" />
             <button>Add</button>
     </form>
     );
