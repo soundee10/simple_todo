@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
@@ -39,9 +40,15 @@ interface IBoardProps{
 }
 
 function Board({toDos, boardId}:IBoardProps){
+        const inputRef = useRef<HTMLInputElement>(null);
+        const onClick = () =>{
+            inputRef.current?.focus();
+        };
         return(
             <Wrapper>
                 <Title>{boardId}</Title>
+                <input ref={inputRef} placeholder="grab me" />
+                <button onClick={onClick}>Click me</button>
                 <Droppable droppableId={boardId}>
                 {(magic, snapshot) => (
                     <Area isDraggingOver={snapshot.isDraggingOver}
