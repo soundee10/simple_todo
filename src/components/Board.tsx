@@ -4,6 +4,8 @@ import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 import { ITodo, toDoState } from "../atoms";
 import { useSetRecoilState } from "recoil";
+import React, { useEffect } from "react";
+
 
 const Wrapper = styled.div`
     padding: 20px 0px;
@@ -28,6 +30,7 @@ const Area = styled.div<IAreaProps>`
     flex-grow: 1;
     transition: background-color 0.3s ease-in-out;
     padding: 20px;
+    width: 100%;
 `;
 
 const Form = styled.form`
@@ -54,15 +57,32 @@ interface IForm {
 function Board({toDos, boardId}:IBoardProps){
         const setToDos = useSetRecoilState(toDoState)
         const {register, setValue, handleSubmit} = useForm<IForm>();
+        useEffect(()=>
+        {if(localStorage.getItem(`${boardId}`)){
+            let loadToDo = JSON.parse(localStorage.getItem(`${boardId}`)+"");
+            //localStorage.removeItem(`${boardId}`);
+            loadToDo.forEach((obj:ITodo)=>{
+                setToDos(allBoards=>{
+                    return{
+                        ...allBoards,
+                        [boardId]:[...allBoards[boardId], obj,]
+                    }
+                })
+            });
+        } else{
+        }}
+        ,[])
+
         const onValid = ({toDo}:IForm) =>{
             const newToDo = {
                 id: Date.now(),
                 text: toDo,
             };
             setToDos(allBoards=>{
+                localStorage.setItem(`${boardId}`, JSON.stringify([...allBoards[boardId], newToDo]));
                 return{
                     ...allBoards,
-                    [boardId]:[newToDo, ...allBoards[boardId]]
+                    [boardId]:[...allBoards[boardId], newToDo,]
                 }
             })
             setValue("toDo", "");
@@ -95,4 +115,4 @@ function Board({toDos, boardId}:IBoardProps){
         );
     }
 
-    export default Board;
+export default React.memo(Board);
